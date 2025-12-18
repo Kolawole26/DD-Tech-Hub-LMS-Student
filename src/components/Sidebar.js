@@ -130,7 +130,7 @@ export default function Sidebar() {
             );
           })}
 
-          <h2 className="text-sm font-semibold text-primary-light uppercase tracking-wider px-4 py-2 mt-6">
+          {/* <h2 className="text-sm font-semibold text-primary-light uppercase tracking-wider px-4 py-2 mt-6">
             COMMUNITY & SUPPORT
           </h2>
           
@@ -153,7 +153,7 @@ export default function Sidebar() {
                 <span>{item.label}</span>
               </Link>
             );
-          })}
+          })} */}
         </nav>
 
         {/* Profile & Payment Section - Fixed bottom section */}
