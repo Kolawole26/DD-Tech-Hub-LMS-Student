@@ -14,6 +14,7 @@ import {
   CreditCard,
   Menu,
   X,
+  GraduationCap,
   User,
 } from 'lucide-react';
 
@@ -62,10 +63,13 @@ export default function Sidebar() {
 
         {/* Logo & Title - Fixed height section */}
         <div className="p-4 border-b border-primary-light flex-shrink-0">
-          <h1 className="text-xl font-bold">Web App Development</h1>
+          <div className="flex items-center space-x-2 mb-2">
+            <GraduationCap className="text-white" size={24} />
+              <h1 className="text-xl font-bold">Web App Development</h1>
+          </div>
           <div className="mt-2">
             <div className="flex justify-between items-center text-sm">
-              <span>Student ID: N/A</span>
+              <span className=' ml-7'>Student ID: N/A</span>
               <span className="bg-status-green text-white px-2 py-1 rounded-full">
                 75.2%
               </span>

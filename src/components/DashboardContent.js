@@ -64,7 +64,7 @@ export default function DashboardContent() {
 
   const paymentStatus = {
     status: 'paid',
-    amount: '$299.99',
+    amount: '₦25000.00',
     dueDate: 'Paid on Nov 15, 2025',
     nextPayment: 'None - Full payment completed'
   };
@@ -529,7 +529,7 @@ export default function DashboardContent() {
       {/* Action Buttons Section */}
       <div className="bg-white rounded-2xl shadow-sm p-6">
         <h2 className="text-xl font-bold text-gray-800 mb-6">Quick Actions</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <Link 
             href="/classroom"
             className="bg-gradient-to-r from-blue-500 to-primary-dark hover:from-primary-dark hover:to-blue-700 text-white p-6 rounded-xl flex flex-col items-center justify-center text-center transition-all hover:shadow-lg"
@@ -557,14 +557,14 @@ export default function DashboardContent() {
             <span className="text-sm opacity-90 mt-1">Performance</span>
           </Link>
           
-          <Link 
+          {/* <Link 
             href="/discussions"
             className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white p-6 rounded-xl flex flex-col items-center justify-center text-center transition-all hover:shadow-lg"
           >
             <MessageSquare size={32} className="mb-3" />
             <span className="font-semibold text-lg">Discussion</span>
             <span className="text-sm opacity-90 mt-1">Join Groups</span>
-          </Link>
+          </Link> */}
         </div>
       </div>
     </div>
