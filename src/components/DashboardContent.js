@@ -53,13 +53,13 @@ export default function DashboardContent() {
   const deadlines = [
     { id: 1, title: 'Assignment 2 due', date: 'Nov 30', type: 'assignment', priority: 'high' },
     { id: 2, title: 'Live Q&A Session', date: 'Dec 5, 7 PM WAT', type: 'session', priority: 'medium' },
-    { id: 3, title: 'Project Submission', date: 'Dec 20', type: 'project', priority: 'high' },
+    // { id: 3, title: 'Project Submission', date: 'Dec 20', type: 'project', priority: 'high' },
   ];
 
   const classReminders = [
     { id: 1, title: 'Next Live Class', description: 'Advanced JavaScript Concepts', time: 'Tomorrow, 10:00 AM', status: 'upcoming' },
     { id: 2, title: 'Recorded Session Available', description: 'CSS Grid Masterclass', time: 'Available Now', status: 'available' },
-    { id: 3, title: 'Office Hours', description: 'With Prof. Johnson', time: 'Friday, 3:00 PM', status: 'scheduled' },
+    // { id: 3, title: 'Office Hours', description: 'With Prof. Johnson', time: 'Friday, 3:00 PM', status: 'scheduled' },
   ];
 
   const paymentStatus = {
@@ -190,7 +190,7 @@ export default function DashboardContent() {
             </div>
 
             {/* Module Cards */}
-            <div className="space-y-4">
+            <div className="space-y-4 grid grid-cols-1 md:grid-cols-2 gap-4">
               {modules.map((module) => (
                 <ModuleCard 
                   key={module.id}
@@ -374,7 +374,16 @@ export default function DashboardContent() {
         <div className="space-y-6">
           {/* Quick Notepad */}
           <div className="bg-white rounded-2xl shadow-sm p-6">
-            <div className="flex items-center justify-between mb-4">
+            <div className="border-t pt-4 rounded-2xl p-6 border border-gray-200 mb-8">
+              <h2 className="text-xl font-bold text-gray-800 mb-2">Module Notes</h2>
+              <NotePad 
+                notes={notes}
+                onUpdate={updateNote}
+              />
+            </div>
+
+            <div className="rounded-2xl p-6 border border-gray-200">
+                          <div className="flex items-center justify-between mb-4 ">
               <h2 className="text-xl font-bold text-gray-800">Quick Notepad</h2>
               <Link 
                 href="/notes" 
@@ -401,14 +410,8 @@ export default function DashboardContent() {
                 </button>
               </div>
             </div>
-            
-            <div className="border-t pt-4">
-              <h3 className="font-semibold text-gray-700 mb-2">Module Notes</h3>
-              <NotePad 
-                notes={notes}
-                onUpdate={updateNote}
-              />
             </div>
+            
           </div>
 
           {/* Upcoming Deadlines */}
@@ -435,7 +438,52 @@ export default function DashboardContent() {
             </button>
           </div>
 
-          {/* Certificate Status */}
+        </div>
+      </div>
+
+      {/* Action Buttons Section */}
+      <div className="bg-white rounded-2xl shadow-sm p-6">
+        <h2 className="text-xl font-bold text-gray-800 mb-6">Quick Actions</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <Link 
+            href="/classroom"
+            className="bg-gradient-to-r from-blue-500 to-primary-dark hover:from-primary-dark hover:to-blue-700 text-white p-6 rounded-xl flex flex-col items-center justify-center text-center transition-all hover:shadow-lg"
+          >
+            <Play size={32} className="mb-3" />
+            <span className="font-semibold text-lg">Live Class</span>
+            <span className="text-sm opacity-90 mt-1">Join now</span>
+          </Link>
+          
+          <Link 
+            href="/assignments"
+            className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white p-6 rounded-xl flex flex-col items-center justify-center text-center transition-all hover:shadow-lg"
+          >
+            <FileText size={32} className="mb-3" />
+            <span className="font-semibold text-lg">Submit Work</span>
+            <span className="text-sm opacity-90 mt-1">Assignments</span>
+          </Link>
+          
+          <Link 
+            href="/grades"
+            className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white p-6 rounded-xl flex flex-col items-center justify-center text-center transition-all hover:shadow-lg"
+          >
+            <BarChart3 size={32} className="mb-3" />
+            <span className="font-semibold text-lg">View Grades</span>
+            <span className="text-sm opacity-90 mt-1">Performance</span>
+          </Link>
+          
+          {/* <Link 
+            href="/discussions"
+            className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white p-6 rounded-xl flex flex-col items-center justify-center text-center transition-all hover:shadow-lg"
+          >
+            <MessageSquare size={32} className="mb-3" />
+            <span className="font-semibold text-lg">Discussion</span>
+            <span className="text-sm opacity-90 mt-1">Join Groups</span>
+          </Link> */}
+        </div>
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Certificate Status */}
           <div className="bg-white rounded-2xl shadow-sm p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-gray-800">Certificate Status</h2>
@@ -523,49 +571,6 @@ export default function DashboardContent() {
               <span>Join Live Class Now</span>
             </Link>
           </div>
-        </div>
-      </div>
-
-      {/* Action Buttons Section */}
-      <div className="bg-white rounded-2xl shadow-sm p-6">
-        <h2 className="text-xl font-bold text-gray-800 mb-6">Quick Actions</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <Link 
-            href="/classroom"
-            className="bg-gradient-to-r from-blue-500 to-primary-dark hover:from-primary-dark hover:to-blue-700 text-white p-6 rounded-xl flex flex-col items-center justify-center text-center transition-all hover:shadow-lg"
-          >
-            <Play size={32} className="mb-3" />
-            <span className="font-semibold text-lg">Live Class</span>
-            <span className="text-sm opacity-90 mt-1">Join now</span>
-          </Link>
-          
-          <Link 
-            href="/assignments"
-            className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white p-6 rounded-xl flex flex-col items-center justify-center text-center transition-all hover:shadow-lg"
-          >
-            <FileText size={32} className="mb-3" />
-            <span className="font-semibold text-lg">Submit Work</span>
-            <span className="text-sm opacity-90 mt-1">Assignments</span>
-          </Link>
-          
-          <Link 
-            href="/grades"
-            className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white p-6 rounded-xl flex flex-col items-center justify-center text-center transition-all hover:shadow-lg"
-          >
-            <BarChart3 size={32} className="mb-3" />
-            <span className="font-semibold text-lg">View Grades</span>
-            <span className="text-sm opacity-90 mt-1">Performance</span>
-          </Link>
-          
-          {/* <Link 
-            href="/discussions"
-            className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white p-6 rounded-xl flex flex-col items-center justify-center text-center transition-all hover:shadow-lg"
-          >
-            <MessageSquare size={32} className="mb-3" />
-            <span className="font-semibold text-lg">Discussion</span>
-            <span className="text-sm opacity-90 mt-1">Join Groups</span>
-          </Link> */}
-        </div>
       </div>
     </div>
   );

@@ -91,7 +91,7 @@ export default function Sidebar() {
                 key={item.id}
                 href={item.href}
                 className={`
-                  w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors
+                  w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors border border-primary-lighter shadow-sm
                   ${isActive 
                     ? 'bg-primary-lighter border border-primary-light text-primary-dark' 
                     : 'text-white hover:text-primary-dark hover:bg-primary-lighter'
@@ -121,7 +121,7 @@ export default function Sidebar() {
                 key={item.id}
                 href={item.href}
                 className={`
-                  w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors
+                  w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors border border-primary-lighter
                   ${isActive 
                     ? 'bg-primary-lighter border border-primary-light text-primary-dark' 
                     : 'text-white hover:text-primary-dark hover:bg-primary-lighter'
@@ -161,7 +161,7 @@ export default function Sidebar() {
         </nav>
 
         {/* Profile & Payment Section - Fixed bottom section */}
-        <div className="flex-shrink-0 w-full p-4 border-t border-primary-light">
+        {/* <div className="flex-shrink-0 w-full p-4 border-t border-primary-light">
           <Link 
             href="/payments"
             className="w-full mb-3 bg-status-green hover:bg-green-600 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center space-x-2 block"
@@ -181,7 +181,7 @@ export default function Sidebar() {
               <p className="text-sm text-primary-dark">Manage Account</p>
             </div>
           </Link>
-        </div>
+        </div> */}
       </aside>
     </>
   );
