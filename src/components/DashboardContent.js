@@ -52,7 +52,7 @@ export default function DashboardContent() {
 
   const deadlines = [
     { id: 1, title: 'Assignment 2 due', date: 'Nov 30', type: 'assignment', priority: 'high' },
-    { id: 2, title: 'Live Q&A Session', date: 'Dec 5, 7 PM WAT', type: 'session', priority: 'medium' },
+    // { id: 2, title: 'Live Q&A Session', date: 'Dec 5, 7 PM WAT', type: 'session', priority: 'medium' },
     // { id: 3, title: 'Project Submission', date: 'Dec 20', type: 'project', priority: 'high' },
   ];
 
