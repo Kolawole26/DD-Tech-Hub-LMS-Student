@@ -28,7 +28,7 @@ export default function Sidebar() {
     { id: 'assignments', label: 'Assignments', icon: FileText, href: '/assignments' },
     { id: 'grades', label: 'Grade Monitoring', icon: BarChart3, href: '/grades' },
     { id: 'certificate', label: 'Certificate Download', icon: Download, href: '/certificate' },
-    // { id: 'discussions', label: 'Group Discussions', icon: MessageSquare, href: '/discussions' },
+    { id: 'discussions', label: 'Group Discussions', icon: MessageSquare, href: '/discussions' },
     // { id: 'notifications', label: 'Class Reminders', icon: Bell, href: '/notifications' },
     { id: 'profile', label: 'Profile Management', icon: User, href: '/profile' },
   ];

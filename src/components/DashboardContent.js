@@ -78,8 +78,8 @@ export default function DashboardContent() {
 
   const discussionGroups = [
     { id: 1, name: 'Web Dev Beginners', members: 45, active: true },
-    { id: 2, name: 'CSS Challenges', members: 32, active: true },
-    { id: 3, name: 'JavaScript Experts', members: 28, active: true },
+    // { id: 2, name: 'CSS Challenges', members: 32, active: true },
+    // { id: 3, name: 'JavaScript Experts', members: 28, active: true },
   ];
 
   const stats = [
@@ -109,8 +109,8 @@ export default function DashboardContent() {
   };
 
   const handleJoinDiscussion = (groupId) => {
-    alert(`Joining discussion group: ${discussionGroups.find(g => g.id === groupId)?.name}`);
     // Navigate to discussion page
+    window.location.href = '/discussions';
   };
 
   const handlePayment = () => {
@@ -338,16 +338,16 @@ export default function DashboardContent() {
           <div className="bg-white rounded-2xl shadow-sm p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-gray-800">Discussion Groups</h2>
-              <Link 
+              {/* <Link 
                 href="/discussions" 
                 className="text-primary-dark hover:text-primary font-medium flex items-center space-x-1"
               >
                 <span>View All</span>
                 <ChevronRight size={16} />
-              </Link>
+              </Link> */}
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="">
               {discussionGroups.map((group) => (
                 <div key={group.id} className="border border-gray-200 rounded-xl p-4 hover:border-blue-300 transition-colors">
                   <div className="flex items-center justify-between mb-3">
