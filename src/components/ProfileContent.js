@@ -212,7 +212,7 @@ export default function ProfileContent() {
                 <span>Payment & Billing</span>
               </button>
               
-              <button
+              {/* <button
                 onClick={() => setActiveTab('privacy')}
                 className={`w-full text-left px-4 py-3 rounded-lg flex items-center space-x-3 ${
                   activeTab === 'privacy'
@@ -222,7 +222,7 @@ export default function ProfileContent() {
               >
                 <Lock size={20} />
                 <span>Privacy & Security</span>
-              </button>
+              </button> */}
             </nav>
           </div>
         </div>
