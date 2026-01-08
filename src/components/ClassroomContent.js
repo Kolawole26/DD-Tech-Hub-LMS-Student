@@ -1,12 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Play, Video, FileText, Download, Calendar, Clock, Users, Mic, Eye, Bell, ExternalLink, Maximize2, Headphones, MessageSquare, Share2, BookOpen, X, FileDown, Volume2 } from 'lucide-react';
+import { Play, Video, FileText, Download, Calendar, Clock, Users, Mic, Eye, Bell, ExternalLink, Maximize2, Headphones, MessageSquare, Share2, BookOpen, X, FileDown, Volume2, Save} from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function ClassroomContent() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState('live');
+  const [activeTab, setActiveTab] = useState('recordings');
   const [selectedRecording, setSelectedRecording] = useState(null);
   const [showJoinModal, setShowJoinModal] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -22,7 +23,7 @@ export default function ClassroomContent() {
     audio: true,
     chat: true
   });
-
+  const [quickNote, setQuickNote] = useState('');
   const liveSessions = [
     { id: 1, title: 'Advanced JavaScript Concepts', time: 'Today, 10:00 AM', duration: '2 hours', instructor: 'Dr. Sarah Johnson', description: 'Deep dive into advanced JavaScript patterns and best practices' },
     { id: 2, title: 'CSS Grid Masterclass', time: 'Tomorrow, 2:00 PM', duration: '1.5 hours', instructor: 'Prof. Michael Chen', description: 'Master CSS Grid layout techniques' },
@@ -106,6 +107,13 @@ export default function ClassroomContent() {
       navigator.clipboard.writeText(window.location.href);
       // Show toast notification (would be implemented with a toast library)
       console.log('Link copied to clipboard');
+    }
+  };
+
+    const handleSaveQuickNote = () => {
+    if (quickNote.trim()) {
+      alert('Note saved!');
+      setQuickNote('');
     }
   };
 
@@ -241,9 +249,9 @@ export default function ClassroomContent() {
           </div>
         </div>
       </div>
-
+      <div className="grid grid-cols-1 lg:grid-cols-6 gap-6">
       {/* Tabs for Recordings & Materials */}
-      <div className="bg-white rounded-2xl shadow-sm">
+      <div className="bg-white rounded-2xl shadow-sm col-span-4">
         <div className="border-b">
           <div className="flex space-x-1 px-6 pt-4">
             <button
@@ -393,6 +401,36 @@ export default function ClassroomContent() {
           )}
         </div>
       </div>
+                  <div className="rounded-2xl p-6 border border-gray-200 col-span-2">
+                                <div className="flex items-center justify-between mb-4 ">
+                    <h2 className="text-xl font-bold text-gray-800">Quick Notepad</h2>
+                    <Link 
+                      href="/notes" 
+                      className="text-primary-dark hover:text-primary text-sm font-medium"
+                    >
+                      View All Notes
+                    </Link>
+                    </div>
+                  
+                    <div className="mb-4">
+                      <textarea
+                        value={quickNote}
+                        onChange={(e) => setQuickNote(e.target.value)}
+                        placeholder="Type your quick note here..."
+                        className="w-full h-40 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                      />
+                      <div className="flex justify-end mt-2">
+                        <button
+                          onClick={handleSaveQuickNote}
+                          className="px-4 py-2 bg-primary-dark hover:bg-primary-light hover:text-primary-dark text-white font-medium rounded-lg flex items-center space-x-2"
+                        >
+                          <Save size={16} />
+                          <span>Save Note</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+              </div>
 
       {/* Join Class Modal */}
       {showJoinModal && (

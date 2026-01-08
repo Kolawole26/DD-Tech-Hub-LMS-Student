@@ -43,7 +43,6 @@ export default function DashboardContent() {
     module3: '',
   });
   
-  const [quickNote, setQuickNote] = useState('');
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [showAlarmModal, setShowAlarmModal] = useState(false);
   const [alarms, setAlarms] = useState([
@@ -69,8 +68,6 @@ export default function DashboardContent() {
 
   const modules = [
     { id: 1, title: 'Module 1: Introduction to Web', progress: 100, lessons: 8, duration: '12 hours' },
-    { id: 2, title: 'Module 2: Deep Dive into CSS', progress: 100, lessons: 10, duration: '15 hours' },
-    { id: 3, title: 'Module 3: Advanced JavaScript', progress: 80, lessons: 12, duration: '18 hours' },
   ];
 
   const deadlines = [
@@ -124,12 +121,6 @@ export default function DashboardContent() {
     }));
   };
 
-  const handleSaveQuickNote = () => {
-    if (quickNote.trim()) {
-      alert('Note saved!');
-      setQuickNote('');
-    }
-  };
 
   const handleProfileUpdate = () => {
     setIsEditingProfile(false);
@@ -307,34 +298,36 @@ export default function DashboardContent() {
             </div>
             
             {/* Overall Progress */}
-            <div className="mb-8">
-              <div className="flex justify-between items-center mb-3">
-                <span className="text-gray-700 font-medium">Overall Progress</span>
-                <span className="text-2xl font-bold text-primary-dark">75.2%</span>
-              </div>
-              <ProgressBar progress={75.2} />
-              <div className="flex justify-between text-sm text-gray-600 mt-2">
-                <span>Started Nov 1, 2025</span>
-                <span>Estimated completion: Dec 30, 2025</span>
+            <div className=" grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                <div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-700 font-medium">Overall Progress</span>
+                        <span className="text-2xl font-bold text-primary-dark">75.2%</span>
+                      </div>
+                      <ProgressBar progress={75.2} />
+                      <div className="flex justify-between text-sm text-gray-600 mt-2">
+                        <span>Started Nov 1, 2025</span>
+                        <span>Estimated completion: Dec 30, 2025</span>
+                      </div>
+                </div>
+
+                          {/* Module Cards */}
+              <div className="">
+                {modules.map((module) => (
+                  <ModuleCard 
+                    key={module.id}
+                    module={module}
+                    note={notes[`module${module.id}`]}
+                    onNoteUpdate={(content) => updateNote(module.id, content)}
+                  />
+                ))}
               </div>
             </div>
 
-            {/* Module Cards */}
-            <div className="space-y-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-              {modules.map((module) => (
-                <ModuleCard 
-                  key={module.id}
-                  module={module}
-                  note={notes[`module${module.id}`]}
-                  onNoteUpdate={(content) => updateNote(module.id, content)}
-                />
-              ))}
-            </div>
           </div>
 
           {/* Profile Management & Payment Tracking */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Profile Management */}
+          {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white rounded-2xl shadow-sm p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-gray-800">Profile Management</h2>
@@ -408,10 +401,10 @@ export default function DashboardContent() {
                   </Link>
                 </div>
               )}
-            </div>
+            </div> */}
 
             {/* Payment Tracking */}
-            <div className="bg-white rounded-2xl shadow-sm p-6">
+            {/* <div className="bg-white rounded-2xl shadow-sm p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-gray-800">Payment Tracking</h2>
                 <div className={`px-3 py-1 rounded-full text-sm font-medium ${
@@ -461,13 +454,13 @@ export default function DashboardContent() {
                   <span>Make New Payment</span>
                 </button>
               </div>
-            </div>
-          </div>
-
+            </div> */}
+          {/* </div> */}
+          <div className=" grid grid-cols-1 lg:grid-cols-2 gap-4 ">
           {/* Discussion Groups */}
-          <div className="bg-white rounded-2xl shadow-sm p-6">
+                        <div className="bg-white rounded-2xl shadow-sm p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-800">Discussion Groups</h2>
+              <h2 className="text-xl font-bold text-gray-800">Group Discussions</h2>
               {/* <Link 
                 href="/discussions" 
                 className="text-primary-dark hover:text-primary font-medium flex items-center space-x-1"
@@ -490,7 +483,7 @@ export default function DashboardContent() {
                   <p className="text-sm text-gray-600 mb-4">Discuss course topics and collaborate with peers</p>
                   <button
                     onClick={() => handleJoinDiscussion(group.id)}
-                    className="w-full border border-primary-dark text-primary-dark hover:bg-primary-lighter py-2 rounded-lg font-medium"
+                    className="w-full border border-primary-dark text-primary-dark hover:bg-primary-lighter py-2 rounded-lg font-medium cursor-pointer"
                   >
                     Join Discussion
                   </button>
@@ -498,6 +491,139 @@ export default function DashboardContent() {
               ))}
             </div>
           </div>
+                            {/* Certificate Status */}
+          <div className="bg-white rounded-2xl shadow-sm p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-gray-800">Certificate Status</h2>
+              <div className={`px-3 py-1 rounded-full text-sm font-medium ${
+                certificateStatus.status === 'available' 
+                  ? 'bg-green-100 text-green-800'
+                  : 'bg-yellow-100 text-yellow-800'
+              }`}>
+                {certificateStatus.status === 'available' ? 'Available Soon' : 'Locked'}
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-gray-600">Completion Required</span>
+                <span className="font-bold text-gray-800">{certificateStatus.completion}</span>
+              </div>
+              
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div 
+                  className="bg-green-500 h-2 rounded-full"
+                  style={{ width: certificateStatus.completion }}
+                ></div>
+              </div>
+              
+              <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg border border-amber-200">
+                <p className="text-sm text-gray-700 mb-2">
+                  <span className="font-semibold">Requirements:</span> {certificateStatus.requirements}
+                </p>
+                <p className="text-sm text-gray-700">
+                  <span className="font-semibold">Estimated Unlock:</span> {certificateStatus.estimatedDate}
+                </p>
+              </div>
+              
+              <Link 
+                href="/certificate"
+                className="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3 rounded-lg flex items-center justify-center space-x-2"
+              >
+                <Download size={20} />
+                <span>Preview Certificate</span>
+              </Link>
+            </div>
+          </div>
+          </div>
+          <div className="">
+
+
+          {/* Class Reminders */}
+          <div className="bg-white rounded-2xl shadow-sm p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-gray-800">Class Reminders</h2>
+              {/* <Link 
+                href="/notifications" 
+                className="text-primary-dark hover:text-primary text-sm font-medium flex items-center space-x-1"
+              >
+                <Bell size={16} />
+                <span>Manage</span>
+              </Link> */}
+            </div>
+            
+            <div className="space-y-4">
+              {classReminders.map((reminder) => (
+                <div key={reminder.id} className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="font-semibold text-gray-800">{reminder.title}</h3>
+                    <span className={`text-sm px-2 py-1 rounded-full ${
+                      reminder.status === 'upcoming' ? 'bg-blue-100 text-blue-800' :
+                      reminder.status === 'available' ? 'bg-green-100 text-green-800' :
+                      'bg-gray-100 text-gray-800'
+                    }`}>
+                      {reminder.status}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-2">{reminder.description}</p>
+                  <div className="flex items-center space-x-1 text-sm text-gray-500">
+                    <Clock size={14} />
+                    <span>{reminder.time}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <Link 
+              href="/classroom"
+              className="w-full mt-4 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-lg flex items-center justify-center space-x-2"
+            >
+              <Play size={20} />
+              <span>Join Live Class Now</span>
+            </Link>
+          </div>
+      </div>
+      {/* Action Buttons Section */}
+      <div className="bg-white rounded-2xl shadow-sm p-6">
+        <h2 className="text-xl font-bold text-gray-800 mb-6">Quick Actions</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <Link 
+            href="/classroom"
+            className="bg-gradient-to-r from-blue-500 to-primary-dark hover:from-primary-dark hover:to-blue-700 text-white p-6 rounded-xl flex flex-col items-center justify-center text-center transition-all hover:shadow-lg"
+          >
+            <Play size={32} className="mb-3" />
+            <span className="font-semibold text-lg">Live Class</span>
+            <span className="text-sm opacity-90 mt-1">Join now</span>
+          </Link>
+          
+          <Link 
+            href="/assignments"
+            className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white p-6 rounded-xl flex flex-col items-center justify-center text-center transition-all hover:shadow-lg"
+          >
+            <FileText size={32} className="mb-3" />
+            <span className="font-semibold text-lg">Submit Work</span>
+            <span className="text-sm opacity-90 mt-1">Assignments</span>
+          </Link>
+          
+          <Link 
+            href="/grades"
+            className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white p-6 rounded-xl flex flex-col items-center justify-center text-center transition-all hover:shadow-lg"
+          >
+            <BarChart3 size={32} className="mb-3" />
+            <span className="font-semibold text-lg">View Grades</span>
+            <span className="text-sm opacity-90 mt-1">Performance</span>
+          </Link>
+          
+          {/* <Link 
+            href="/discussions"
+            className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white p-6 rounded-xl flex flex-col items-center justify-center text-center transition-all hover:shadow-lg"
+          >
+            <MessageSquare size={32} className="mb-3" />
+            <span className="font-semibold text-lg">Discussion</span>
+            <span className="text-sm opacity-90 mt-1">Join Groups</span>
+          </Link> */}
+        </div>
+      </div>
         </div>
 
         {/* Right Column - Notes, Deadlines, Certificate, Reminders */}
@@ -510,36 +636,6 @@ export default function DashboardContent() {
                 notes={notes}
                 onUpdate={updateNote}
               />
-            </div>
-
-            <div className="rounded-2xl p-6 border border-gray-200">
-                          <div className="flex items-center justify-between mb-4 ">
-              <h2 className="text-xl font-bold text-gray-800">Quick Notepad</h2>
-              <Link 
-                href="/notes" 
-                className="text-primary-dark hover:text-primary text-sm font-medium"
-              >
-                View All Notes
-              </Link>
-            </div>
-            
-            <div className="mb-4">
-              <textarea
-                value={quickNote}
-                onChange={(e) => setQuickNote(e.target.value)}
-                placeholder="Type your quick note here..."
-                className="w-full h-40 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-              />
-              <div className="flex justify-end mt-2">
-                <button
-                  onClick={handleSaveQuickNote}
-                  className="px-4 py-2 bg-primary-dark hover:bg-primary-light hover:text-primary-dark text-white font-medium rounded-lg flex items-center space-x-2"
-                >
-                  <Save size={16} />
-                  <span>Save Note</span>
-                </button>
-              </div>
-            </div>
             </div>
             
           </div>
@@ -774,137 +870,8 @@ export default function DashboardContent() {
         </div>
       </div>
 
-      {/* Action Buttons Section */}
-      <div className="bg-white rounded-2xl shadow-sm p-6">
-        <h2 className="text-xl font-bold text-gray-800 mb-6">Quick Actions</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <Link 
-            href="/classroom"
-            className="bg-gradient-to-r from-blue-500 to-primary-dark hover:from-primary-dark hover:to-blue-700 text-white p-6 rounded-xl flex flex-col items-center justify-center text-center transition-all hover:shadow-lg"
-          >
-            <Play size={32} className="mb-3" />
-            <span className="font-semibold text-lg">Live Class</span>
-            <span className="text-sm opacity-90 mt-1">Join now</span>
-          </Link>
-          
-          <Link 
-            href="/assignments"
-            className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white p-6 rounded-xl flex flex-col items-center justify-center text-center transition-all hover:shadow-lg"
-          >
-            <FileText size={32} className="mb-3" />
-            <span className="font-semibold text-lg">Submit Work</span>
-            <span className="text-sm opacity-90 mt-1">Assignments</span>
-          </Link>
-          
-          <Link 
-            href="/grades"
-            className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white p-6 rounded-xl flex flex-col items-center justify-center text-center transition-all hover:shadow-lg"
-          >
-            <BarChart3 size={32} className="mb-3" />
-            <span className="font-semibold text-lg">View Grades</span>
-            <span className="text-sm opacity-90 mt-1">Performance</span>
-          </Link>
-          
-          {/* <Link 
-            href="/discussions"
-            className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white p-6 rounded-xl flex flex-col items-center justify-center text-center transition-all hover:shadow-lg"
-          >
-            <MessageSquare size={32} className="mb-3" />
-            <span className="font-semibold text-lg">Discussion</span>
-            <span className="text-sm opacity-90 mt-1">Join Groups</span>
-          </Link> */}
-        </div>
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Certificate Status */}
-          <div className="bg-white rounded-2xl shadow-sm p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-gray-800">Certificate Status</h2>
-              <div className={`px-3 py-1 rounded-full text-sm font-medium ${
-                certificateStatus.status === 'available' 
-                  ? 'bg-green-100 text-green-800'
-                  : 'bg-yellow-100 text-yellow-800'
-              }`}>
-                {certificateStatus.status === 'available' ? 'Available Soon' : 'Locked'}
-              </div>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600">Completion Required</span>
-                <span className="font-bold text-gray-800">{certificateStatus.completion}</span>
-              </div>
-              
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div 
-                  className="bg-green-500 h-2 rounded-full"
-                  style={{ width: certificateStatus.completion }}
-                ></div>
-              </div>
-              
-              <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg border border-amber-200">
-                <p className="text-sm text-gray-700 mb-2">
-                  <span className="font-semibold">Requirements:</span> {certificateStatus.requirements}
-                </p>
-                <p className="text-sm text-gray-700">
-                  <span className="font-semibold">Estimated Unlock:</span> {certificateStatus.estimatedDate}
-                </p>
-              </div>
-              
-              <Link 
-                href="/certificate"
-                className="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3 rounded-lg flex items-center justify-center space-x-2"
-              >
-                <Download size={20} />
-                <span>Preview Certificate</span>
-              </Link>
-            </div>
-          </div>
 
-          {/* Class Reminders */}
-          <div className="bg-white rounded-2xl shadow-sm p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-gray-800">Class Reminders</h2>
-              <Link 
-                href="/notifications" 
-                className="text-primary-dark hover:text-primary text-sm font-medium flex items-center space-x-1"
-              >
-                <Bell size={16} />
-                <span>Manage</span>
-              </Link>
-            </div>
-            
-            <div className="space-y-4">
-              {classReminders.map((reminder) => (
-                <div key={reminder.id} className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-semibold text-gray-800">{reminder.title}</h3>
-                    <span className={`text-sm px-2 py-1 rounded-full ${
-                      reminder.status === 'upcoming' ? 'bg-blue-100 text-blue-800' :
-                      reminder.status === 'available' ? 'bg-green-100 text-green-800' :
-                      'bg-gray-100 text-gray-800'
-                    }`}>
-                      {reminder.status}
-                    </span>
-                  </div>
-                  <p className="text-sm text-gray-600 mb-2">{reminder.description}</p>
-                  <div className="flex items-center space-x-1 text-sm text-gray-500">
-                    <Clock size={14} />
-                    <span>{reminder.time}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            <Link 
-              href="/classroom"
-              className="w-full mt-4 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-lg flex items-center justify-center space-x-2"
-            >
-              <Play size={20} />
-              <span>Join Live Class Now</span>
-            </Link>
-          </div>
-      </div>
+
     </div>
   );
 }
