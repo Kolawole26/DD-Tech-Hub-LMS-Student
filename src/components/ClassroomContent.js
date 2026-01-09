@@ -239,13 +239,13 @@ export default function ClassroomContent() {
               </div>
             </div>
 
-            <button 
+            {/* <button 
               onClick={handleViewMaterials}
               className="w-full bg-primary-dark hover:bg-primary-light hover:text-primary-dark text-white font-semibold py-3 rounded-lg flex items-center justify-center space-x-2"
             >
               <BookOpen size={20} />
               <span>View Class Materials</span>
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
