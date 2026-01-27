@@ -1,9 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
+import Image from "next/image";
+import { useAuth } from '@/context/AuthContext';
+
 import {
   Home,
   Video,
@@ -31,6 +34,12 @@ export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
 
+    // Use AuthContext instead of direct localStorage
+  const { user, logout, isAuthenticated } = useAuth();
+
+  // Load user info from AuthContext
+  const userInfo = user;
+
   const toggleDropdown = (dropdown) => {
     setOpenDropdowns(prev => ({
       ...prev,
@@ -38,19 +47,59 @@ export default function Sidebar() {
     }));
   };
 
-  const handleLogoutClick = (e) => {
-    e.preventDefault();
+  const handleLogoutClick = () => {
     setShowLogoutConfirm(true);
   };
 
   const confirmLogout = () => {
+    logout(); // Use logout from AuthContext
     setShowLogoutConfirm(false);
-    // Here you can add your actual logout logic (clear tokens, etc.)
-    router.push('https://ddtech-landing.vercel.app/');
   };
 
   const cancelLogout = () => {
     setShowLogoutConfirm(false);
+  };
+
+    // Format user name
+  const getUserFullName = () => {
+    if (!userInfo) return 'Administrator';
+    const firstName = userInfo.first_name || '';
+    const lastName = userInfo.last_name || '';
+    return `${firstName} ${lastName}`.trim() || 'Administrator';
+  };
+
+  const getUserInitials = () => {
+  if (!userInfo) return 'A';
+  
+  const { first_name = '', last_name = '' } = userInfo;
+  
+  // Filter out empty strings and get first letters
+  const initials = [first_name, last_name]
+    .filter(name => name.trim())
+    .map(name => name.charAt(0).toUpperCase())
+    .join('');
+  
+  return initials || 'A';
+};
+
+    // Get user email
+  const getUserEmail = () => {
+    if (!userInfo) return 'admin@example.com';
+    return userInfo.email || 'admin@example.com';
+  };
+
+    // Get user role with proper formatting
+  const getUserRole = () => {
+    if (!userInfo) return 'Teacher';
+    
+    if (userInfo.role) {
+      const role = userInfo.role;
+      return role === 'Super Admin' ? 'Super Admin' : 
+             role === 'Admin' ? 'Teacher' : 
+             role.charAt(0).toUpperCase() + role.slice(1);
+    }
+    
+    return userInfo.type || 'Teacher';
   };
 
   const mainCourseItems = [
@@ -69,6 +118,13 @@ export default function Sidebar() {
     { id: 'profile', label: 'Profile Management', icon: User, href: '/profile' },
     // { id: 'support', label: 'Support & Feedback', icon: HelpCircle, href: '/support' },
   ];
+
+      // Redirect to login if not authenticated
+    useEffect(() => {
+      if (!isAuthenticated && pathname !== '/login') {
+        router.push('/login');
+      }
+    }, [isAuthenticated, pathname, router]);
 
   return (
     <>
