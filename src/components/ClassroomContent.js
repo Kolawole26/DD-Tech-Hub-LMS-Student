@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Play, Video, FileText, Download, Calendar, Clock, Users, Mic, Eye, Bell, ExternalLink, Maximize2, Headphones, MessageSquare, Share2, BookOpen, X, FileDown, Volume2, Save} from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { joinLiveSession, leaveSession, generateStudentID } from '@/utils/zegocloud-student';
 
 export default function ClassroomContent() {
   const router = useRouter();
@@ -24,6 +25,14 @@ export default function ClassroomContent() {
     chat: true
   });
   const [quickNote, setQuickNote] = useState('');
+  // ZEGOCLOUD state for students
+const [zegoInstance, setZegoInstance] = useState(null);
+const [currentRoomID, setCurrentRoomID] = useState('');
+const [currentUserID, setCurrentUserID] = useState('');
+const [showVideoCall, setShowVideoCall] = useState(false);
+const [studentName, setStudentName] = useState('');
+const meetingContainerRef = useRef(null);
+
   const liveSessions = [
     { id: 1, title: 'Advanced JavaScript Concepts', time: 'Today, 10:00 AM', duration: '2 hours', instructor: 'Dr. Sarah Johnson', description: 'Deep dive into advanced JavaScript patterns and best practices' },
     { id: 2, title: 'CSS Grid Masterclass', time: 'Tomorrow, 2:00 PM', duration: '1.5 hours', instructor: 'Prof. Michael Chen', description: 'Master CSS Grid layout techniques' },
@@ -42,15 +51,96 @@ export default function ClassroomContent() {
     { id: 4, title: 'Reference Materials', type: 'ZIP', size: '48.5 MB', description: 'Collection of reference documents' },
   ];
 
-  const handleJoinClass = () => {
+const handleJoinClass = async () => {
+  try {
+    // Generate unique student ID
+    const userID = generateStudentID();
+    
+    // Get room ID from the live session (you can get this from session data)
+    const roomID = 'room_' + Date.now().toString(); // In real app, this comes from backend/session data
+    
+    // Prompt for student name (optional - can come from user profile)
+    const name = prompt('Enter your name:', 'Student');
+    if (!name) return;
+    
+    setStudentName(name);
+    setCurrentRoomID(roomID);
+    setCurrentUserID(userID);
+    setShowVideoCall(true);
     setLiveClassStatus(prev => ({ ...prev, isJoined: true }));
-    setShowJoinModal(true);
-  };
-
-  const handleLeaveClass = () => {
-    setLiveClassStatus(prev => ({ ...prev, isJoined: false }));
+    
+    // Close the join modal
     setShowJoinModal(false);
+    
+    // Wait for the container to be rendered
+    setTimeout(async () => {
+      if (meetingContainerRef.current) {
+        try {
+          const zc = await joinLiveSession(
+            meetingContainerRef.current,
+            roomID,
+            userID,
+            name,
+            {
+              microphone: liveClassStatus.audio,
+              camera: false, // Camera off by default for students
+              chat: liveClassStatus.chat,
+              onJoinRoom: () => {
+                console.log('Successfully joined the live class');
+              },
+              onLeaveRoom: () => {
+                handleLeaveClass();
+              },
+              onUserJoin: (users) => {
+                console.log('New participants joined:', users);
+              },
+              onUserLeave: (users) => {
+                console.log('Participants left:', users);
+              },
+              onRoomStateChanged: (state) => {
+                console.log('Room state:', state);
+              },
+            }
+          );
+          
+          setZegoInstance(zc);
+        } catch (error) {
+          console.error('Failed to join video call:', error);
+          alert('Failed to join live class. Please check your internet connection and try again.');
+          setShowVideoCall(false);
+          setLiveClassStatus(prev => ({ ...prev, isJoined: false }));
+        }
+      }
+    }, 100);
+    
+  } catch (error) {
+    console.error('Error joining live session:', error);
+    alert('Failed to join live session: ' + error.message);
+  }
+};
+
+useEffect(() => {
+  return () => {
+    if (zegoInstance) {
+      leaveSession(zegoInstance);
+    }
   };
+}, [zegoInstance]);
+
+const handleLeaveClass = () => {
+  if (zegoInstance) {
+    leaveSession(zegoInstance);
+    setZegoInstance(null);
+  }
+  
+  setLiveClassStatus(prev => ({ ...prev, isJoined: false }));
+  setShowVideoCall(false);
+  setShowJoinModal(false);
+  setCurrentRoomID('');
+  setCurrentUserID('');
+  
+  alert('You have left the live class');
+};
 
   const handleToggleFullscreen = () => {
     setLiveClassStatus(prev => ({ ...prev, isFullscreen: !prev.isFullscreen }));
@@ -117,9 +207,11 @@ export default function ClassroomContent() {
     }
   };
 
-  const navigateToLiveClass = () => {
-    router.push('/classroom/live/advanced-javascript');
-  };
+const navigateToLiveClass = async () => {
+  // Instead of navigation, directly join the class
+  setShowJoinModal(false);
+  await handleJoinClass();
+};
 
   const navigateToRecording = (recordingId) => {
     router.push(`/classroom/recordings/${recordingId}`);
@@ -133,122 +225,135 @@ export default function ClassroomContent() {
         <p className="text-primary-lighter">Access live classes, recordings, and course materials</p>
       </div>
 
-      {/* Live Class Now */}
-      <div className="bg-white rounded-2xl shadow-sm p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-gray-800">Live Class Now</h2>
-          <div className="flex items-center space-x-2 text-red-600">
-            <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
-            <span className="font-semibold">LIVE NOW</span>
+{/* Live Class Now */}
+<div className="bg-white rounded-2xl shadow-sm p-6">
+  <div className="flex items-center justify-between mb-6">
+    <h2 className="text-xl font-bold text-gray-800">Live Class Now</h2>
+    <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-2 text-red-600">
+        <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
+        <span className="font-semibold">LIVE NOW</span>
+      </div>
+      {showVideoCall && (
+        <button 
+          onClick={handleLeaveClass}
+          className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors"
+        >
+          Leave Class
+        </button>
+      )}
+    </div>
+  </div>
+  
+  {showVideoCall ? (
+    <>
+      {/* ZEGOCLOUD Video Container */}
+      <div 
+        ref={meetingContainerRef} 
+        className="w-full rounded-xl overflow-hidden bg-gray-900 mb-6"
+        style={{ height: '600px' }}
+      />
+      
+      {/* Session Info */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="p-4 bg-gray-50 rounded-lg">
+          <div className="flex items-center space-x-3">
+            <Users className="text-purple-600" size={24} />
+            <div>
+              <h3 className="font-semibold">You are connected</h3>
+              <p className="text-sm text-gray-600">as {studentName}</p>
+            </div>
           </div>
         </div>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Video Player */}
-          <div className="bg-gray-900 rounded-xl overflow-hidden">
-            <div className="aspect-video bg-black flex items-center justify-center relative">
-              {!liveClassStatus.isJoined ? (
-                <div className="text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 bg-red-600 rounded-full flex items-center justify-center animate-pulse">
-                    <Play className="text-white" size={32} />
-                  </div>
-                  <p className="text-white font-semibold">Live Class in Progress</p>
-                  <p className="text-gray-400 text-sm mt-1">Advanced JavaScript Concepts</p>
-                </div>
-              ) : (
-                <div className="w-full h-full flex flex-col">
-                  {/* Video controls */}
-                  <div className="absolute top-4 right-4 flex space-x-2">
-                    <button 
-                      onClick={handleToggleFullscreen}
-                      className="p-2 bg-black/50 text-white rounded-lg hover:bg-black/70"
-                    >
-                      {liveClassStatus.isFullscreen ? <Maximize2 size={20} /> : <Maximize2 size={20} />}
-                    </button>
-                    <button 
-                      onClick={handleToggleMute}
-                      className="p-2 bg-black/50 text-white rounded-lg hover:bg-black/70"
-                    >
-                      {liveClassStatus.isMuted ? <Volume2 size={20} /> : <Volume2 size={20} />}
-                    </button>
-                  </div>
-                  
-                  {/* Simulated video content */}
-                  <div className="flex-1 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="w-16 h-16 mx-auto mb-4 bg-red-600 rounded-full flex items-center justify-center">
-                        <Play className="text-white" size={32} />
-                      </div>
-                      <p className="text-white font-semibold">Connected to Live Class</p>
-                      <p className="text-gray-400 text-sm mt-1">{liveClassStatus.participants} participants</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className="p-4 bg-gray-800">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-white font-semibold">Advanced JavaScript Concepts</h3>
-                  <p className="text-gray-400 text-sm">Dr. Sarah Johnson</p>
-                </div>
-                <button 
-                  onClick={handleJoinClass}
-                  className="bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-2 rounded-lg flex items-center space-x-2"
-                >
-                  <Play size={20} />
-                  <span>{liveClassStatus.isJoined ? 'Leave Class' : 'Join Now'}</span>
-                </button>
-              </div>
+        <div className="p-4 bg-gray-50 rounded-lg">
+          <div className="flex items-center space-x-3">
+            <Clock className="text-green-600" size={24} />
+            <div>
+              <h3 className="font-semibold">Class In Progress</h3>
+              <p className="text-sm text-gray-600">Advanced JavaScript</p>
             </div>
           </div>
-
-          {/* Class Details */}
-          <div className="space-y-4">
-            <div className="p-4 border border-gray-200 rounded-lg">
-              <div className="flex items-center space-x-3 mb-3">
-                <Calendar className="text-blue-600" size={24} />
-                <div>
-                  <h3 className="font-semibold">Class Schedule</h3>
-                  <p className="text-sm text-gray-600">Monday, December 13 • 10:00 AM WAT</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Clock className="text-green-600" size={24} />
-                <div>
-                  <h3 className="font-semibold">Duration</h3>
-                  <p className="text-sm text-gray-600">2 hours</p>
-                </div>
-              </div>
+        </div>
+        <div className="p-4 bg-gray-50 rounded-lg">
+          <div className="flex items-center space-x-3">
+            <Video className="text-blue-600" size={24} />
+            <div>
+              <h3 className="font-semibold">Room ID</h3>
+              <p className="text-sm text-gray-600 font-mono">{currentRoomID.slice(-8)}</p>
             </div>
-
-            <div className="p-4 border border-gray-200 rounded-lg">
-              <div className="flex items-center space-x-3 mb-3">
-                <Users className="text-purple-600" size={24} />
-                <div>
-                  <h3 className="font-semibold">Participants</h3>
-                  <p className="text-sm text-gray-600">{liveClassStatus.participants} students online</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Mic className="text-orange-600" size={24} />
-                <div>
-                  <h3 className="font-semibold">Audio Setup</h3>
-                  <p className="text-sm text-gray-600">Microphone & speakers ready</p>
-                </div>
-              </div>
-            </div>
-
-            {/* <button 
-              onClick={handleViewMaterials}
-              className="w-full bg-primary-dark hover:bg-primary-light hover:text-primary-dark text-white font-semibold py-3 rounded-lg flex items-center justify-center space-x-2"
-            >
-              <BookOpen size={20} />
-              <span>View Class Materials</span>
-            </button> */}
           </div>
         </div>
       </div>
+    </>
+  ) : (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Video Player Preview */}
+      <div className="bg-gray-900 rounded-xl overflow-hidden">
+        <div className="aspect-video bg-black flex items-center justify-center relative">
+          <div className="text-center">
+            <div className="w-16 h-16 mx-auto mb-4 bg-red-600 rounded-full flex items-center justify-center animate-pulse">
+              <Play className="text-white" size={32} />
+            </div>
+            <p className="text-white font-semibold">Live Class in Progress</p>
+            <p className="text-gray-400 text-sm mt-1">Advanced JavaScript Concepts</p>
+          </div>
+        </div>
+        <div className="p-4 bg-gray-800">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-white font-semibold">Advanced JavaScript Concepts</h3>
+              <p className="text-gray-400 text-sm">Dr. Sarah Johnson</p>
+            </div>
+            <button 
+              onClick={handleJoinClass}
+              className="bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-2 rounded-lg flex items-center space-x-2"
+            >
+              <Play size={20} />
+              <span>Join Now</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Class Details */}
+      <div className="space-y-4">
+        <div className="p-4 border border-gray-200 rounded-lg">
+          <div className="flex items-center space-x-3 mb-3">
+            <Calendar className="text-blue-600" size={24} />
+            <div>
+              <h3 className="font-semibold">Class Schedule</h3>
+              <p className="text-sm text-gray-600">Monday, December 13 • 10:00 AM WAT</p>
+            </div>
+          </div>
+          <div className="flex items-center space-x-3">
+            <Clock className="text-green-600" size={24} />
+            <div>
+              <h3 className="font-semibold">Duration</h3>
+              <p className="text-sm text-gray-600">2 hours</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-4 border border-gray-200 rounded-lg">
+          <div className="flex items-center space-x-3 mb-3">
+            <Users className="text-purple-600" size={24} />
+            <div>
+              <h3 className="font-semibold">Participants</h3>
+              <p className="text-sm text-gray-600">{liveClassStatus.participants} students online</p>
+            </div>
+          </div>
+          <div className="flex items-center space-x-3">
+            <Mic className="text-orange-600" size={24} />
+            <div>
+              <h3 className="font-semibold">Audio Setup</h3>
+              <p className="text-sm text-gray-600">Microphone & speakers ready</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )}
+</div>
       <div className="grid grid-cols-1 lg:grid-cols-6 gap-6">
       {/* Tabs for Recordings & Materials */}
       <div className="bg-white rounded-2xl shadow-sm col-span-4">
