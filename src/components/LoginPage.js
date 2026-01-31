@@ -18,20 +18,18 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [formErrors, setFormErrors] = useState({
-    email: '',
+    username: '',
     password: '',
   });
 
   const [formData, setFormData] = useState({
-    email: '',
+    username: '',
     password: ''
   });
 
   // Validation functions
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email) return 'Email is required';
-    if (!emailRegex.test(email)) return 'Please enter a valid email address';
+  const validateUsername= (username) => {
+    if (!username) return 'Username is required';
     return '';
   };
 
@@ -42,15 +40,15 @@ export default function LoginPage() {
   };
 
   const validateForm = () => {
-    const emailError = validateEmail(formData.email);
+    const usernameError = validateUsername(formData.username);
     const passwordError = validatePassword(formData.password);
     
     setFormErrors({
-      email: emailError,
+      username: usernameError,
       password: passwordError,
     });
 
-    return !emailError && !passwordError;
+    return !usernameError && !passwordError;
   };
 
   const handleInputChange = (field, value) => {
@@ -77,7 +75,7 @@ export default function LoginPage() {
     try {
       // API call to login endpoint
       const response = await api.post('/auths/login', {
-        email: formData.email,
+        username: formData.username,
         password: formData.password
       });
 
@@ -104,7 +102,7 @@ export default function LoginPage() {
       
       // Handle specific error cases
       if (err.message.includes('401') || err.message.includes('Invalid credentials')) {
-        setError('Invalid email or password');
+        setError('Invalid username or password');
       } else if (err.message.includes('Network')) {
         setError('Network error. Please check your connection.');
       } else if (err.message.includes('404')) {
@@ -120,12 +118,12 @@ export default function LoginPage() {
 
   const handleDemoLogin = (role) => {
     const demoCredentials = {
-      email: `${role}@edutech.com`,
+      username: `${role}@edutech.com`,
       password: 'demo123'
     };
     
     setFormData(demoCredentials);
-    setFormErrors({ email: '', password: '' });
+    setFormErrors({ username: '', password: '' });
     setError('');
     setSuccess(`Demo login as ${role} ready. Click Login to continue.`);
   };
@@ -232,25 +230,25 @@ export default function LoginPage() {
           )}
 
           <form onSubmit={handleSubmit}>
-            {/* Email Field */}
+            {/* username Field */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
+                Username
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                 <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
+                  type="text"
+                  value={formData.username}
+                  onChange={(e) => handleInputChange('username', e.target.value)}
                   className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-dark focus:border-primary-dark ${
-                    formErrors.email ? 'border-red-300' : 'border-gray-300'
+                    formErrors.username ? 'border-red-300' : 'border-gray-300'
                   }`}
                   placeholder="student@edutech.com"
                 />
               </div>
-              {formErrors.email && (
-                <p className="mt-1 text-sm text-red-600">{formErrors.email}</p>
+              {formErrors.username && (
+                <p className="mt-1 text-sm text-red-600">{formErrors.username}</p>
               )}
             </div>
 
