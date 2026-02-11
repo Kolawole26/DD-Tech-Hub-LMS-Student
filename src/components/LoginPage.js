@@ -131,71 +131,108 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-white flex">
       {/* Left Side - Image/Illustration */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary-dark to-primary relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/10"></div>
-        
-        {/* Decorative Elements */}
-        <div className="absolute top-10 left-10 w-32 h-32 bg-white/10 rounded-full"></div>
-        <div className="absolute bottom-20 right-20 w-40 h-40 bg-white/5 rounded-full"></div>
-        <div className="absolute top-1/3 right-1/4 w-24 h-24 bg-white/8 rounded-full"></div>
+<div className="hidden lg:flex lg:w-1/2 bg-gradient-to-b from-primary-dark to-primary relative overflow-hidden">
+  {/* Modern Geometric Pattern */}
+  <div className="absolute inset-0 opacity-10">
+    <div className="absolute top-0 left-0 w-full h-full">
+      <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="1"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#grid)" />
+      </svg>
+    </div>
+  </div>
 
-        <div className="relative z-10 flex flex-col justify-between p-12 text-white h-full">
-          <div>
-            <div className="flex items-center gap-3 mb-8">
-              <div className="bg-white rounded-xl">
-                <Image src="/assets/images/ddTechLogo.png" alt="logo" width="50" height="50" className="w-[80px] p-0" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold">DDTech</h1>
-                <p className="text-primary-lighter text-sm">Learning Platform</p>
-              </div>
-            </div>
+  {/* Abstract Blob Shapes */}
+  <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+  <div className="absolute -bottom-32 -left-20 w-80 h-80 bg-white/5 rounded-full blur-3xl"></div>
+  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
 
-            <div className="mt-20">
-              <h2 className="text-4xl font-bold mb-6">Welcome to DDTech</h2>
-              <p className="text-xl text-primary-lighter mb-10">
-                Manage your learning platform with powerful tools and insights
-              </p>
-              
-              <div className="space-y-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                    <CheckCircle size={20} />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold">Secure Access</h3>
-                    <p className="text-primary-lighter text-sm">Enterprise-grade security</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                    <CheckCircle size={20} />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold">Real-time Analytics</h3>
-                    <p className="text-primary-lighter text-sm">Monitor platform performance</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+  {/* Floating Particles */}
+  <div className="absolute inset-0">
+    {[...Array(20)].map((_, i) => (
+      <div
+        key={i}
+        className="absolute w-1 h-1 bg-white/30 rounded-full animate-pulse"
+        style={{
+          top: `${Math.random() * 100}%`,
+          left: `${Math.random() * 100}%`,
+          animationDelay: `${Math.random() * 5}s`,
+          animationDuration: `${3 + Math.random() * 5}s`
+        }}
+      />
+    ))}
+  </div>
 
-          <div className="flex items-center gap-6">
-            <div className="flex -space-x-3">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="w-10 h-10 bg-white/20 rounded-full border-2 border-primary-dark"></div>
-              ))}
-            </div>
-            <div>
-              <p className="font-medium">Join 500+ learners</p>
-              <p className="text-primary-lighter text-sm">
-                Building skills for the future, together
-              </p>
-            </div>
+  {/* Main Content - Centered Modern Layout */}
+  <div className="relative z-10 flex flex-col items-center justify-center w-full h-full px-16">
+    {/* Brand Section - Centered */}
+    <div className="text-center mb-16 animate-fade-in">
+      <div className="inline-flex items-center justify-center mb-6">
+        <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-3 border border-white/20 shadow-xl">
+          <div className="bg-white rounded-2xl shadow-lg transform hover:scale-105 transition-transform duration-300">
+            <Image 
+              src="/assets/images/ddTechLogo.png" 
+              alt="DDTech Logo" 
+              width="70" 
+              height="70" 
+              className="w-[80px] p-2" 
+            />
           </div>
         </div>
       </div>
+      <h1 className="text-5xl font-bold text-white mb-3 tracking-tight">DDTech</h1>
+      <p className="text-white/80 text-lg">Empower Your Learning Journey</p>
+    </div>
+
+    {/* Feature Cards - Grid Layout */}
+    <div className="grid grid-cols-2 gap-5 w-full max-w-2xl mb-12">
+      <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300 transform hover:-translate-y-1">
+        <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-4">
+          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+        </div>
+        <h3 className="text-white font-semibold text-lg mb-1">Secure</h3>
+        <p className="text-white/70 text-sm">Enterprise-grade encryption</p>
+      </div>
+
+      <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300 transform hover:-translate-y-1">
+        <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-4">
+          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+        </div>
+        <h3 className="text-white font-semibold text-lg mb-1">Analytics</h3>
+        <p className="text-white/70 text-sm">Real-time insights</p>
+      </div>
+
+      <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300 transform hover:-translate-y-1">
+        <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-4">
+          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <h3 className="text-white font-semibold text-lg mb-1">Affordable</h3>
+        <p className="text-white/70 text-sm">Flexible pricing plans</p>
+      </div>
+
+      <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300 transform hover:-translate-y-1">
+        <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-4">
+          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+        </div>
+        <h3 className="text-white font-semibold text-lg mb-1">Community</h3>
+        <p className="text-white/70 text-sm">500+ active learners</p>
+      </div>
+    </div>
+
+  </div>
+</div>
 
       {/* Right Side - Login Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-4 md:p-8">
